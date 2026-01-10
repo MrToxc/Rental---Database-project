@@ -1,7 +1,6 @@
 import database
 from Brand import Brand
 
-
 class BrandDAO:
 
     @staticmethod
@@ -10,7 +9,7 @@ class BrandDAO:
 
     @staticmethod
     def get_by_id(id_brand):
-        return database.get_by_id_as_object(Brand, id_brand)
+        return database.get_by_id_as_object(data_class=Brand, id_record=id_brand)
 
     @staticmethod
     def insert(brand):

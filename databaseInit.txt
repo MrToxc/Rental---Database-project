@@ -21,8 +21,8 @@ CREATE TABLE car (
 CREATE TABLE customer (
     id_customer INT IDENTITY(1,1) PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    registration_date DATE DEFAULT GETDATE() -- Date
+    surname VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- Table 4: Contracts
