@@ -28,7 +28,11 @@ def insert(data_object):
         question_marks = ", ".join(["?"] * len(record.keys()))
         sql = f"INSERT INTO {table} ({attributes}) VALUES ({question_marks})"
         cursor = connection.cursor()
-        cursor.execute(sql, *record.values())
+        try:
+            cursor.execute(sql, *record.values())
+        except Exception as e:
+            connection.rollback()
+            raise RuntimeError(f"Chyba při vkladani do tabulky '{table}': {str(e)}") from e
         connection.commit()
 
 def delete(data_object):
@@ -39,7 +43,12 @@ def delete(data_object):
     with get_db_connection() as connection:
         cursor = connection.cursor()
         sql = f"DELETE FROM {table} WHERE {condition}"
-        cursor.execute(sql, *record.values())
-        connection.commit()
+        try:
+            cursor.execute(sql, *record.values())
+        except Exception as e:
+            connection.rollback()
+            raise RuntimeError(f"Chyba při mazani z tabulky '{table}': {str(e)}") from e
+        else:
+            connection.commit()
         return cursor.rowcount > 0
 

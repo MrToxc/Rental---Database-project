@@ -53,13 +53,17 @@ def insert(data_object):
         attributes = ", ".join(record.keys())
         question_marks = ", ".join(["?"] * len(record.keys()))
         sql = f"INSERT INTO {table} ({attributes}) OUTPUT INSERTED.id_{table} VALUES ({question_marks})"
-
         cursor = connection.cursor()
-        cursor.execute(sql, *record.values())
 
-        id_record = cursor.fetchone()[0]
-        connection.commit()
-        return id_record
+        try:
+            cursor.execute(sql, *record.values())
+            id_record = cursor.fetchone()[0]
+        except Exception as e:
+            connection.rollback()
+            raise RuntimeError(f"Chyba při vkládání do tabulky '{table}': {str(e)}") from e
+        else:
+            connection.commit()
+            return id_record
 
 def delete(data_object):
     table = get_table_from_data_object(data_object)
@@ -69,8 +73,13 @@ def delete(data_object):
     with get_db_connection() as connection:
         cursor = connection.cursor()
         sql = f"DELETE FROM {table} WHERE {id_attribute_name} = ?"
-        cursor.execute(sql, id_record)
-        connection.commit()
+        try:
+            cursor.execute(sql, id_record)
+        except Exception as e:
+            connection.rollback()
+            raise RuntimeError(f"Chyba při mazani z tabulky '{table}': {str(e)}") from e
+        else:
+            connection.commit()
         return cursor.rowcount > 0
 
 
@@ -93,9 +102,14 @@ def update(data_object):
         values.append(id_record)
 
         cursor = connection.cursor()
-        cursor.execute(sql, *values)
-
-        connection.commit()
+        try:
+            cursor.execute(sql, *values)
+        except Exception as e:
+            connection.rollback()
+            raise RuntimeError(f"Chyba při aktualizaci tabulky '{table}': {str(e)}") from e
+        else:
+            connection.commit()
+        return cursor.rowcount > 0
 
 
 def get_table_from_data_object(data_object) -> str:
