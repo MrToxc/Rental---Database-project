@@ -56,6 +56,14 @@ class TestContract_carDAO(unittest.TestCase):
         contract_cars = Contract_carDAO.get_all()
         self.assertTrue(contract_car not in contract_cars)
 
+    def test_negative_reference_integrity(self):
+        contract_car = Contract_car(id_contract=-1, id_car=-5)
+        try:
+            ContractDAO.insert(contract_car)
+        except Exception as e:
+            pass
+        else:
+            raise Exception("id was invalid")
 
 if __name__ == '__main__':
     unittest.main()
