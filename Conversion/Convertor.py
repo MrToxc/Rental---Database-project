@@ -39,3 +39,20 @@ def convert_csv_to_data_objects(input_file_path: str, data_class: Type[T]) -> Li
         raise RuntimeError(f"An error occurred while processing the CSV: {e}")
 
     return data_objects
+
+#NEXTVERSION napsat metody obecne
+def store_old_id(brands):
+    for brand in brands:
+        brand.old_id = brand.id_brand
+
+def find_new_brand_id(old_brand_id, brands):
+    for brand in brands:
+        if brand.old_id == old_brand_id:
+            return brand.id_brand
+    raise RuntimeError(f"Brand {old_brand_id} not found")
+
+def correct_brand_id(cars, brands):
+    for car in cars:
+       car.id_brand = find_new_brand_id(car.id_brand, brands)
+    for brand in brands:
+        del brand.old_id

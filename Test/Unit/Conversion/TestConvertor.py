@@ -1,10 +1,13 @@
 import unittest
 from pathlib import Path
 
-from Conversion.Convertor import convert_csv_to_data_objects
+from Conversion.Convertor import convert_csv_to_data_objects, correct_brand_id, store_old_id
+from DAO.BrandDAO import BrandDAO
+from DAO.CarDAO import CarDAO
 from Database.Config import find_file
 from Objects.Brand import Brand
 from Objects.Car import Car
+
 
 
 class TestConvertor(unittest.TestCase):
@@ -18,10 +21,38 @@ class TestConvertor(unittest.TestCase):
         self.assertTrue(brands[0].id_brand is "1")
         self.assertTrue(brands[0].name == "Škoda")
 
-
     def test_convert_csv_to_car(self):
         car_csv = find_file("Test/TestData/car.csv")
         self.assertTrue(Path(car_csv).resolve().exists())
 
         cars = convert_csv_to_data_objects(car_csv, Car)
         self.assertTrue(len(cars) == 10)
+
+    def test_insert_delete_cars_using_csv(self):
+        brand_csv = find_file("Test/TestData/brand.csv")
+        brands = convert_csv_to_data_objects(brand_csv, Brand)
+
+        store_old_id(brands)
+
+        brand_count = len(BrandDAO.get_all())
+        try:
+            BrandDAO.insert_all(brands)
+            self.cars_test(brands)
+        finally:
+            BrandDAO.delete_all(brands)
+
+        self.assertTrue(brand_count is len(BrandDAO.get_all()))
+
+
+
+    def cars_test(self, brands):
+        car_csv = find_file("Test/TestData/car.csv")
+        cars = convert_csv_to_data_objects(car_csv, Car)
+        car_count = len(CarDAO.get_all())
+        try:
+            correct_brand_id(cars, brands)
+            CarDAO.insert_all(cars)
+        finally:
+            CarDAO.delete_all(cars)
+
+        self.assertTrue(car_count is len(CarDAO.get_all()))

@@ -32,9 +32,9 @@ class CarDAO:
     @staticmethod
     def insert_all(cars):
         for car in cars:
-            insert(cars)
+            car.id_car = insert(car)
 
     @staticmethod
     def delete_all(cars):
-        for brand in cars:
-            delete(cars)
+        for car in cars:
+            delete(car)

@@ -27,7 +27,7 @@ class BrandDAO:
     @staticmethod
     def insert_all(brands):
         for brand in brands:
-            insert(brand)
+            brand.id_brand = insert(brand)
 
     @staticmethod
     def delete_all(brands):
