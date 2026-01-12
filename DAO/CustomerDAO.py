@@ -23,3 +23,13 @@ class CustomerDAO:
     @staticmethod
     def update(customer):
         return update(customer)
+
+    @staticmethod
+    def insert_all(customers):
+        for customer in customers:
+            customer.id_customer = insert(customer)
+
+    @staticmethod
+    def delete_all(customers):
+        for customer in customers:
+            delete(customer)
