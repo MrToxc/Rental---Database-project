@@ -51,6 +51,10 @@ class TestContract_carDAO(unittest.TestCase):
         try:
             contract_cars = Contract_carDAO.get_all()
             self.assertTrue(contract_car in contract_cars)
+            self.assertTrue(contract_car in Contract_carDAO.get_filtered(contract))
+            self.assertTrue(contract_car in Contract_carDAO.get_filtered(car))
+            self.assertTrue(contract in Contract_carDAO.get_contracts(car))
+            self.assertTrue(car in Contract_carDAO.get_cars(contract))
         finally:
             Contract_carDAO.delete(contract_car)
         contract_cars = Contract_carDAO.get_all()

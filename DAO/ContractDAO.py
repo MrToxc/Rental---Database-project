@@ -28,4 +28,3 @@ class ContractDAO:
     @staticmethod
     def get_customer(contract):
         return CustomerDAO.get_by_id(contract.id_customer)
-
