@@ -1,4 +1,9 @@
--- 1. TABLE CREATION
+CREATE DATABASE Rental;
+GO
+
+USE Rental;
+GO
+
 
 -- Table 1: Car brands (ENUM implementation using CHECK constraint)
 CREATE TABLE brand (
@@ -29,7 +34,7 @@ CREATE TABLE customer (
 CREATE TABLE contract (
     id_contract INT IDENTITY(1,1) PRIMARY KEY,
     id_customer INT FOREIGN KEY REFERENCES customer(id_customer),
-    total_price FLOAT DEFAULT 0
+    total_price FLOAT DEFAULT 0,
     date_from DATETIME NOT NULL,
     date_to DATETIME NOT NULL,
 );
